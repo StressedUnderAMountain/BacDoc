@@ -19,9 +19,9 @@
 ## 📁 Files
 | File | Purpose |
 |------|---------|
-| `bacdoc.py` | Main Flask application |
-| `database.db` | Bacterial database (~800 species) |
-| `app.html` | Web interface |
+| `PHytonAILLM.py` | Main Flask application |
+| `Centraldatabase.csv` | Bacterial database (~800 species) |
+| `index.html` | Web interface |
 | `requirements.txt` | Python dependencies |
 
 ## 🧪 Test It Works
