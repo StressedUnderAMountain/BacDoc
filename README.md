@@ -22,7 +22,11 @@
 | `PHytonAILLM.py` | Main Flask application |
 | `Centraldatabase.csv` | Bacterial database (~800 species) |
 | `index.html` | Web interface |
-| `requirements.txt` | Python dependencies |
+| `requirements.txt` | Flask==2.3.3
+flask-session==0.6.0
+pandas==2.1.4
+numpy==1.26.2
+ |
 
 ## 🧪 Test It Works
 
