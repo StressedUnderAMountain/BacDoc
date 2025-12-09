@@ -8,6 +8,11 @@
 
 ## 🚀 Quick Start
 
+pip install -r requirements.txt
+python bacdoc.py
+
+Open: http://localhost:5000
+Login: admin / bacdoc123
 
 ## ✨ Features
 - ✅ Identify 800+ bacterial species
@@ -22,21 +27,24 @@
 | `PHytonAILLM.py` | Main Flask application |
 | `Centraldatabase.csv` | Bacterial database (~800 species) |
 | `index.html` | Web interface |
-| `requirements` | Flask==2.3.3, flask-session==0.6.0, pandas==2.1.4, numpy==1.26.2 |
+| `requirements.txt` | Flask==2.3.3, flask-session==0.6.0, pandas==2.1.4, numpy==1.26.2 |
 
 ## 🧪 Test It Works
 
+pip install -r requirements.txt
+python bacdoc.py
+Visit: http://localhost:5000
+Login: admin / bacdoc123
 
 ## 📊 Citation
 Preston, M.J., Ghorpade, R. (2025). BacDoc: A Database-Driven Platform for Bacterial Identification and Media Prediction
 Code: https://github.com/StressedUnderAMountain/BacDoc
-
 
 ## ⚠️ Disclaimer
 **Research prototype** - Not validated for clinical use yet. Hybrid media needs lab testing.
 
 ---
 
-**Preston Joshua Menezes**  
-KBP College, Navi Mumbai  
+**Preston Joshua Menezes**
+Karmaveer Bhaurao Patil College, Navi Mumbai
 University of Mumbai
