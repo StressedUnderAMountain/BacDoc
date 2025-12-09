@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ 'BacDoc Microbiology Assistant' }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <style>
+        body { font-family: Arial; background-color: #f5f5f5; padding: 50px; margin: 0;}
+        #search-container { width: 75%; background: white; border-radius: 8px; box-shadow: 0 0 10px #ccc; padding: 20px; margin-bottom: 20px;}
+        .search-row { display: flex; gap: 10px; width: 100%; position:relative;}
+        #organismInput { 
+            flex: 5; 
+            padding: 12px; 
+            font-size: 16px; 
+            box-sizing: border-box; 
+            border: 2px solid #ddd; 
+            border-radius: 6px;
+            min-height: 45px;
+            width: 100%;
+        }
+        #ghostText { 
+            position: absolute; 
+            left: 14px; 
+            top: 12px; 
+            color: #bbb; 
+            font-size: 16px; 
+            pointer-events: none; 
+            z-index: 1;
+        }
+        #searchBtn { 
+            flex: 1; 
+            padding: 12px; 
+            font-size: 16px; 
+            background-color: #007bff; 
+            color: white; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer;
+            min-height: 45px;
+        }
+        #searchBtn:hover { background-color: #0056b3; }
+        #response-box { margin-top: 15px; padding: 12px; border-radius: 6px; font-size: 16px; min-height: 20px;}
+        .response-error { color: #c0392b; background: #fdf6f6; border: 1px solid #f5b7b1;}
+        .response-success { color: #27ae60; background: #eafaf1; border: 1px solid #a9dfbf;}
+        #dropdown { 
+            position: absolute; 
+            z-index: 22; 
+            top: 55px; 
+            left: 0; 
+            right: 20%; 
+            background: white; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15); 
+            display: none; 
+            max-height: 200px; 
+            overflow-y: auto;
+        }
+        #dropdown div { 
+            padding: 10px 15px; 
+            cursor: pointer; 
+            border-bottom: 1px solid #eee; 
+            font-size: 14px;
+        }
+        #dropdown div:hover { background: #f8f9fa;}
+        #dropdown div:last-child { border-bottom: none;}
+        #popup-panel { 
+            width: 25%; 
+            padding: 20px; 
+            background: white; 
+            border-left: 1px solid #ccc; 
+            display: none; 
+            position: fixed; 
+            top: 60px; 
+            right: 0; 
+            bottom: 0; 
+            box-shadow: -5px 0 15px rgba(0,0,0,0.1); 
+            overflow-y: auto;
+        }
+        #popup-close { 
+            position: absolute; 
+            top: 10px; 
+            right: 15px; 
+            cursor: pointer; 
+            font-weight: bold; 
+            font-size: 22px; 
+            color: #666;
+        }
+        #popup-close:hover { color: #333;}
+        .volume-row { margin: 15px 0; padding: 12px; background: #f8f9fa; border-radius: 8px;}
+        #volumeInput { width: 80px; padding: 6px; font-size: 16px; border: 1px solid #ddd; border-radius: 4px;}
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 15px 0; 
+            background: white;
+        }
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 10px; 
+            text-align: left;
+        }
+        th { 
+            background-color: #f2f2f2; 
+            font-weight: bold;
+            color: #333;
+        }
+        td { background: #fafafa; }
+        .sources-info {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 1px solid #dee2e6;
+        }
+        .contributor-item {
+            display: flex;
+            align-items: center;
+            margin: 6px 0;
+            padding: 6px;
+            background: white;
+            border-radius: 4px;
+        }
+        .contributor-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        label { font-weight: bold; color: #333;}
+        .login-box, .form-box, .content-box { 
+            max-width: 800px; 
+            margin: 30px auto; 
+            padding: 20px; 
+            background: white; 
+            border-radius: 8px; 
+            box-shadow: 0 0 10px #ccc;
+        }
+        .error { color: red; }
+        #unknown-section { 
+            background: #e8f4fd; 
+            border: 1px solid #bee5eb; 
+            border-radius: 8px; 
+            padding: 20px; 
+            margin: 20px 0; 
+            display: none;
+        }
+        #unknown-section h4 { margin-top: 0; color: #0c5460;}
+        #unknown-section input { 
+            display: block; 
+            margin: 8px 0; 
+            padding: 10px; 
+            width: 250px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        #unknown-section button { 
+            margin-top: 15px; 
+            padding: 12px 24px; 
+            background: #17a2b8; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer;
+            font-size: 16px;
+        }
+        #unknown-section button:hover { background: #138496;}
+        .unknown-btn { 
+            background: #28a745; 
+            color: white; 
+            padding: 10px 20px; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            margin-top: 10px;
+            font-size: 16px;
+        }
+        .unknown-btn:hover { background: #218838;}
+
+
+        /* MOBILE RESPONSIVENESS */
+        @media (max-width: 768px) {
+            body { padding: 0; margin: 0; }
+            #search-container { width: 100vw !important; margin: 0 !important; border-radius: 0 !important; box-shadow: none !important; padding: 8px !important; }
+            .search-row { flex-direction: column; gap: 8px; }
+            #dropdown { right: 0; left: 0; }
+            #popup-panel { 
+                width: 100vw !important; 
+                left: 0 !important; 
+                right: 0 !important; 
+                top: auto !important; 
+                bottom: 0 !important; 
+                border-left: none !important; 
+                border-top: 1px solid #ccc !important; 
+                border-radius: 12px 12px 0 0 !important; 
+                box-shadow: 0 -5px 15px rgba(0,0,0,0.1) !important; 
+                max-height: 60vh !important; 
+                padding: 10px !important; 
+                z-index: 9999 !important; 
+            }
+        }
+        @media (max-width: 480px) {
+            #popup-panel { max-height: 70vh !important; padding: 8px !important; }
+            table { font-size: 13px; }
+            th, td { padding: 6px; }
+        }
+    </style>
+</head>
+<body>
+
+
+
+{% if page == 'login' %}
+<div class="login-box">
+    <h2>Login</h2>
+    {% if error %}
+    <p class="error">{{ error }}</p>
+    {% endif %}
+    <form method="POST" action="{{ url_for('login') }}">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+</div>
+{% endif %}
+
+
+
+{% if page == 'home' %}
+<div id="search-container">
+    <h2><a href="#" style="text-decoration:none; color: inherit;">BacDoc</a> Microbiology Assistant</h2>
+
+
+    <div class="search-row">
+        <div style="position: relative; flex: 1; min-width: 0;">
+            <span id="ghostText"></span>
+            <input type="text" id="organismInput" autocomplete="off" placeholder="e.g., E. coli, how to grow, identify" style="background: transparent; position: relative; z-index: 2; width: 100%;"/>
+        </div>
+        <button id="searchBtn" style="min-width: 80px;">Search</button>
+        <div id="dropdown"></div>
+    </div>
+    <div id="response-box"></div>
+
+
+    <div id="unknown-section">
+        <h4>Unknown Organism Parameters</h4>
+        <p>Fill in the details to get suggested media from similar organisms:</p>
+        <form id="unknownForm">
+            <input name="origin" placeholder="Origin/Source (e.g., soil, water, blood)" required>
+            <input name="temperature" placeholder="Temperature °C (e.g., 37)" type="number" required>
+            <input name="ph" placeholder="Optimal pH (e.g., 7.0)" type="number" step="0.1" required>
+            <input name="aerobicity" placeholder="Aerobicity (aerobic/anaerobic/facultative)" required>
+            <input name="morphology" placeholder="Morphology (cocci/bacilli/spirilla)" required>
+            <input name="gram" placeholder="Gram Nature (positive/negative)" required>
+            <button type="submit">Get Suggested Media</button>
+        </form>
+    </div>
+    
+    <br>
+    <a href="{{ url_for('logout') }}">Logout</a>
+</div>
+
+
+<div id="popup-panel">
+    <span id="popup-close">&times;</span>
+    <div id="popup-content"></div>
+    <div class="volume-row" style="display:none;">
+        <label for="volumeInput">Volume (ml): </label>
+        <input type="number" id="volumeInput" min="1" step="any" value="100" />
+        <small style="color: #666; display: block; margin-top: 5px;">Media amounts will scale automatically</small>
+    </div>
+</div>
+{% endif %}
+
+
+<script>
+let currentData = null;
+const organismInput = document.getElementById('organismInput');
+const ghostText = document.getElementById('ghostText');
+const dropdown = document.getElementById('dropdown');
+const responseBox = document.getElementById('response-box');
+const unknownSection = document.getElementById('unknown-section');
+let currentSuggestions = [];
+
+
+// Autocomplete with ghost text
+organismInput.addEventListener('input', function(e) {
+    let term = this.value;
+    if (term.length > 0 && currentSuggestions.length > 0) {
+        let bestMatch = currentSuggestions[0];
+        if (bestMatch.toLowerCase().startsWith(term.toLowerCase())) {
+            ghostText.textContent = term + bestMatch.slice(term.length);
+        } else {
+            ghostText.textContent = '';
+        }
+    } else {
+        ghostText.textContent = '';
+    }
+    if (term.length < 2) {
+        dropdown.style.display = 'none';
+        currentSuggestions = [];
+        return;
+    }
+    fetch('/suggest_organisms', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ partial: term })
+    })
+    .then(r => r.json())
+    .then(data => {
+        currentSuggestions = data.suggestions;
+        dropdown.innerHTML = '';
+        if (data.suggestions.length > 0) {
+            dropdown.style.display = 'block';
+            data.suggestions.forEach(item => {
+                let div = document.createElement('div');
+                div.textContent = item;
+                div.onclick = () => {
+                    let prefix = '';
+                    let lowerInput = term.toLowerCase();
+                    if (lowerInput.includes('how to grow')) prefix = 'how to grow ';
+                    else if (lowerInput.includes('how to identify')) prefix = 'how to identify ';
+                    else if (lowerInput.includes('grow')) prefix = 'grow ';
+                    else if (lowerInput.includes('identify')) prefix = 'identify ';
+                    organismInput.value = prefix + item;
+                    dropdown.style.display = 'none';
+                    ghostText.textContent = '';
+                };
+                dropdown.appendChild(div);
+            });
+        } else {
+            dropdown.style.display = 'none';
+        }
+    });
+});
+
+
+// Tab key to complete ghost text
+organismInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Tab' && ghostText.textContent) {
+        e.preventDefault();
+        this.value = ghostText.textContent;
+        ghostText.textContent = '';
+        dropdown.style.display = 'none';
+    }
+});
+
+
+// Hide dropdown and ghost text when clicking elsewhere
+document.addEventListener('click', function(e) {
+    if (!dropdown.contains(e.target) && e.target !== organismInput) {
+        dropdown.style.display = 'none';
+        ghostText.textContent = '';
+    }
+});
+
+
+document.getElementById('searchBtn').addEventListener('click', () => {
+    let name = organismInput.value.trim();
+    if (!name) {
+        showResponse("Please enter an organism name.", 'error');
+        return;
+    }
+    fetchOrganismInfo(name);
+});
+
+
+function showResponse(message, type = 'error') {
+    responseBox.innerHTML = message;
+    responseBox.className = type === 'error' ? 'response-error' : 'response-success';
+}
+
+
+function fetchOrganismInfo(name, volume = 100, preserveIntent = false) {
+    const requestData = { 
+        organism_name: name, 
+        volume: volume 
+    };
+    if (preserveIntent && currentData) {
+        requestData.preserve_intent = true;
+        requestData.original_intent = currentData.intent;
+    }
+    fetch('/get_organism_info', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(requestData)
+    })
+    .then(resp => resp.json())
+    .then(data => {
+        if (data.success) {
+            responseBox.innerHTML = '';
+            responseBox.className = '';
+            unknownSection.style.display = 'none';
+            renderPopup(data.data);
+            document.getElementById('popup-panel').style.display = 'block';
+        } else {
+            document.getElementById('popup-panel').style.display = 'none';
+            showResponse(data.error + '<br><button class="unknown-btn" id="unknownYesBtn">Yes, enter parameters</button>', 'error');
+            setTimeout(() => {
+                const unknownBtn = document.getElementById('unknownYesBtn');
+                if (unknownBtn) {
+                    unknownBtn.onclick = function() {
+                        unknownSection.style.display = 'block';
+                        responseBox.innerHTML = '';
+                        responseBox.className = '';
+                    }
+                }
+            }, 100);
+        }
+    })
+    .catch(() => showResponse("Error fetching organism info.", 'error'));
+}
+
+
+document.getElementById('unknownForm').onsubmit = function(e) {
+    e.preventDefault();
+    const fd = new FormData(this);
+    const volume = document.getElementById('volumeInput').value || 100;
+    fetch('/unknown_result_ajax', {
+        method: 'POST',
+        body: JSON.stringify({
+            origin: fd.get('origin'),
+            temperature: fd.get('temperature'),
+            ph: fd.get('ph'),
+            aerobicity: fd.get('aerobicity'),
+            morphology: fd.get('morphology'),
+            gram: fd.get('gram'),
+            volume: volume
+        }),
+        headers: {'Content-Type': 'application/json'}
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            unknownSection.style.display = 'none';
+            renderPopup(data.data);
+            document.getElementById('popup-panel').style.display = 'block';
+            showResponse("Suggested media based on similar organisms:", 'success');
+        } else {
+            showResponse(data.error, 'error');
+        }
+    });
+}
+
+
+function renderPopup(data) {
+    let d = data;
+    let html = `<h3>${d.organism_name}</h3>`;
+    if (d.is_unknown) {
+        html += `
+        <div style="background: #fff3cd; border: 2px solid #ffc107; padding: 15px; 
+                    border-radius: 6px; margin: 15px 0; color: #856404;">
+            <strong>⚠️ RESEARCH PROTOTYPE - UNVALIDATED RESULTS</strong>
+            <p style="margin: 8px 0; font-size: 14px;">
+                This hybrid media formulation is generated <strong>algorithmically only</strong> 
+                and has <strong>NOT been experimentally validated</strong>.
+            </p>
+            <p style="margin: 8px 0; font-size: 14px;">
+                It represents a research suggestion based on similar known organisms.
+            </p>
+            <p style="margin: 8px 0; font-size: 14px;">
+                <strong>Use at your own risk:</strong> Verify with standard microbiological references 
+                and conduct pilot experiments before large-scale use.
+            </p>
+        </div>
+        `;
+    }
+    if (d.origin) html += `<p><strong>Origin/Source:</strong> ${d.origin}</p>`;
+    if (d.growth_conditions) html += `<p><strong>Growth Conditions:</strong> ${d.growth_conditions}</p>`;
+    if (d.is_unknown && d.contributors) {
+        html += `<div class="sources-info">`;
+        html += `<h4>Based on similar organisms:</h4>`;
+        d.contributors.forEach(contributor => {
+            html += `<div class="contributor-item">`;
+            html += `<div class="contributor-color" style="background-color: ${contributor.color};"></div>`;
+            html += `<div><strong>${contributor.organism}</strong><br><small>${contributor.media}</small></div>`;
+            html += `</div>`;
+        });
+        html += `</div>`;
+    }
+    html += `<h4>${d.intent === 'isolation' ? 'Differential Media Composition' : 'Media Composition'}:</h4>`;
+    if (!d.media_composition || Object.keys(d.media_composition).length === 0) {
+        html += `<p><em>No media composition data available.</em></p>`;
+    } else {
+        html += `<table><thead><tr><th>Component</th><th>Amount</th></tr></thead><tbody>`;
+for (const [comp, data] of Object.entries(d.media_composition)) {
+    html += `<tr>`;
+    
+    // Color indicators (if unknown organism)
+    if (d.is_unknown && d.component_sources && d.component_sources[comp]) {
+        html += `<td style="position: relative; padding-bottom: 15px;">`;
+        html += `<div>${comp.charAt(0).toUpperCase() + comp.slice(1)}</div>`;
+        let colors = d.component_sources[comp].map(source => source.color);
+        let uniqueColors = [...new Set(colors)];
+        html += `<div style="position: absolute; bottom: 2px; left: 5px; display: flex; gap: 2px;">`;
+        uniqueColors.forEach((color) => {
+            html += `<div style="width: 10px; height: 3px; background-color: ${color}; border-radius: 1px;"></div>`;
+        });
+        html += `</div></td>`;
+    } else {
+        html += `<td>${comp.charAt(0).toUpperCase() + comp.slice(1)}</td>`;
+    }
+    
+    // Handle amount and unit
+    if (typeof data === 'object' && data.amount !== undefined) {
+        // New format: {amount: X, unit: 'g'/'ml'/'supplement'}
+        if (data.amount === null || data.unit === 'supplement') {
+            html += `<td><em>as needed</em></td>`;
+        } else {
+            let displayAmount = data.amount > 0 && data.amount < 0.01 ? data.amount.toFixed(4) : data.amount.toFixed(2);
+            html += `<td>${displayAmount} ${data.unit}</td>`;
+        }
+    } else {
+        // Old format: just a number (backward compatibility)
+        html += `<td>${data > 0 && data < 0.01 ? data.toFixed(4) : data.toFixed(2)} g</td>`;
+    }
+    
+    html += `</tr>`;
+}
+html += `</tbody></table>`;
+
+
+       
+    }
+    if (d.intent === 'isolation' || (d.show_all_fields && d.biochemical_tests && d.biochemical_tests.length > 0)) {
+        html += `<h4>Biochemical Tests:</h4>`;
+        if (!d.biochemical_tests || d.biochemical_tests.length === 0) {
+            html += `<p><em>No biochemical test data available.</em></p>`;
+        } else {
+            html += `<ul>`;
+            d.biochemical_tests.forEach(test => {
+                html += `<li>${test}</li>`;
+            });
+            html += `</ul>`;
+        }
+    }
+    if (d.show_all_fields) {
+    html = `<h3>${d.organism_name}</h3>`;
+    if (d.origin) html += `<p><strong>Origin:</strong> ${d.origin}</p>`;
+    if (d.growth_conditions) html += `<p><strong>Optimal Growth Conditions:</strong> ${d.growth_conditions}</p>`;
+    
+    html += `<h4>Optimal Media${d.optimal_media_name ? ': ' + d.optimal_media_name : ''}</h4>`;
+    if (d.optimal_media_composition && Object.keys(d.optimal_media_composition).length) {
+        html += `<table><tr><th>Component</th><th>Amount</th></tr>`;
+        for (const [comp, data] of Object.entries(d.optimal_media_composition)) {
+            html += `<tr><td>${comp.charAt(0).toUpperCase()+comp.slice(1)}</td>`;
+            
+            // Handle new format with units
+            if (typeof data === 'object' && data.amount !== undefined) {
+                if (data.amount === null || data.unit === 'supplement') {
+                    html += `<td><em>as needed</em></td>`;
+                } else {
+                    let displayAmount = data.amount > 0 && data.amount < 0.01 ? data.amount.toFixed(4) : data.amount.toFixed(2);
+                    html += `<td>${displayAmount} ${data.unit}</td>`;
+                }
+            } else {
+                // Backward compatibility
+                html += `<td>${data > 0 && data < 0.01 ? data.toFixed(4) : data.toFixed(2)} g</td>`;
+            }
+            html += `</tr>`;
+        }
+        html += `</table>`;
+    } else {
+        html += "<em>No optimal media composition available.</em>";
+    }
+    
+    html += `<h4>Differential Media${d.differential_media_name ? ': ' + d.differential_media_name : ''}</h4>`;
+    if (d.differential_media_composition && Object.keys(d.differential_media_composition).length) {
+        html += `<table><tr><th>Component</th><th>Amount</th></tr>`;
+        for (const [comp, data] of Object.entries(d.differential_media_composition)) {
+            html += `<tr><td>${comp.charAt(0).toUpperCase()+comp.slice(1)}</td>`;
+            
+            // Handle new format with units
+            if (typeof data === 'object' && data.amount !== undefined) {
+                if (data.amount === null || data.unit === 'supplement') {
+                    html += `<td><em>as needed</em></td>`;
+                } else {
+                    let displayAmount = data.amount > 0 && data.amount < 0.01 ? data.amount.toFixed(4) : data.amount.toFixed(2);
+                    html += `<td>${displayAmount} ${data.unit}</td>`;
+                }
+            } else {
+                // Backward compatibility
+                html += `<td>${data > 0 && data < 0.01 ? data.toFixed(4) : data.toFixed(2)} g</td>`;
+            }
+            html += `</tr>`;
+        }
+        html += `</table>`;
+    } else {
+        html += "<em>No differential media composition available.</em>";
+    }
+    
+    html += `<h4>Biochemical Tests</h4>`;
+    if (d.biochemical_tests && d.biochemical_tests.length) {
+        html += "<ul>";
+        d.biochemical_tests.forEach(t => html += `<li>${t}</li>`);
+        html += "</ul>";
+    } else {
+        html += "<em>No biochemical test data available.</em>";
+    }
+}
+
+
+    document.getElementById('popup-content').innerHTML = html;
+    document.querySelector('.volume-row').style.display = 'block';
+    document.getElementById('volumeInput').value = d.volume || 100;
+    currentData = d;
+    if (window.innerWidth <= 768) { document.body.style.overflow = 'hidden'; }
+}
+document.getElementById('popup-close').addEventListener('click', () => {
+    document.getElementById('popup-panel').style.display = 'none';
+    if (window.innerWidth <= 768) { document.body.style.overflow = 'auto'; }
+    currentData = null;
+});
+document.getElementById('volumeInput').addEventListener('input', (event) => {
+    if (!currentData) return;
+    const newVol = parseFloat(event.target.value);
+    if (!newVol || newVol <= 0 || isNaN(newVol)) return;
+    if (currentData.is_unknown) {
+        const lastForm = document.getElementById('unknownForm');
+        if (lastForm) {
+            const fd = new FormData(lastForm);
+            fetch('/unknown_result_ajax', {
+                method: 'POST',
+                body: JSON.stringify({
+                    origin: fd.get('origin'),
+                    temperature: fd.get('temperature'),
+                    ph: fd.get('ph'),
+                    aerobicity: fd.get('aerobicity'),
+                    morphology: fd.get('morphology'),
+                    gram: fd.get('gram'),
+                    volume: newVol
+                }),
+                headers: {'Content-Type': 'application/json'}
+            })
+            .then(r => r.json())
+            .then(data => {
+                if (data.success) {
+                    renderPopup(data.data);
+                }
+            });
+        }
+    } else {
+        fetchOrganismInfo(currentData.organism_name, newVol, true);
+    }
+});
+</script>
+
+
+
+
+</body>
+</html>"
