@@ -28,6 +28,7 @@
 
 
 ## 📊 Citation
+Preston, M.J., Ghorpade, R. (2025). BacDoc: A Database-Driven Platform for Bacterial Identification and Media Prediction
 Code: https://github.com/StressedUnderAMountain/BacDoc
 
 
