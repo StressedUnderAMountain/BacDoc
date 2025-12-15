@@ -1,50 +1,78 @@
-# BacDoc
+# BacDoc 🧫  
+**A Database-Driven Platform for Bacterial Identification and Culture Media Recommendation**
 
-**Database-Driven Platform for Bacterial Identification & Media Prediction**
+[![License](https://img.shields.io/github/license/StressedUnderAMountain/BacDoc)](LICENSE)  
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)  
+[![Flask](https://img.shields.io/badge/framework-Flask-black)](https://flask.palletsprojects.com/)  
+[![Status](https://img.shields.io/badge/status-Research%20Prototype-yellow)](https://github.com/StressedUnderAMountain/BacDoc)
 
-[![Python](https://img.shields.io/badge/Python-3.7%2B-blue)](https://www.python.org/)
-[![Flask](https://img.shields.io/badge/Flask-2.3-green)](https://flask.palletsprojects.com/)
-[![License](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
-
-## 🚀 Quick Start
-
-pip install -r requirements.txt
-python bacdoc.py
-
-Open: http://localhost:5000
-Login: admin / bacdoc123
-
-## ✨ Features
-- ✅ Identify 800+ bacterial species
-- ✅ Automated media recommendations
-- ✅ Hybrid media for unknown organisms
-- ✅ Volume scaling (100-2000 mL)
-- ✅ Free • Open Source • No installation
-
-## 📁 Files
-| File | Purpose |
-|------|---------|
-| `PHytonAILLM.py` | Main Flask application |
-| `Centraldatabase.csv` | Bacterial database (~800 species) |
-| `index.html` | Web interface |
-| `requirements.txt` | Flask==2.3.3, flask-session==0.6.0, pandas==2.1.4, numpy==1.26.2 |
-
-## 🧪 Test It Works
-
-pip install -r requirements.txt
-python bacdoc.py
-Visit: http://localhost:5000
-Login: admin / bacdoc123
-
-## 📊 Citation
-Preston, M.J., Ghorpade, R. (2025). BacDoc: A Database-Driven Platform for Bacterial Identification and Media Prediction
-Code: https://github.com/StressedUnderAMountain/BacDoc
-
-## ⚠️ Disclaimer
-**Research prototype** - Not validated for clinical use yet. Hybrid media needs lab testing.
+BacDoc is a free, web-based microbiology support platform that assists with **bacterial identification and cultivation media prediction**, especially for **resource-limited laboratories and educational settings**. Unlike expensive commercial systems, BacDoc connects **organism identification directly to optimized growth media recommendations**, including automatic volume scaling and hybrid media generation for unknown organisms.
 
 ---
 
-**Preston Joshua Menezes**
-Karmaveer Bhaurao Patil College, Navi Mumbai
-University of Mumbai
+## 🔬 Why BacDoc?
+- Advanced diagnostic systems like MALDI-TOF and VITEK 2 are expensive and inaccessible in many labs.
+- Over **99% of bacteria cannot be cultured using standard media**.
+- Existing databases list media recipes but do not **automatically link identification to cultivation guidance**.
+
+**BacDoc bridges this gap.**
+
+---
+
+## ✨ Key Features
+- 🔍 **Fuzzy organism name matching** (handles spelling errors)
+- 🧪 **Automated growth media recommendation**
+- 📏 **Automatic media scaling** (100 mL → 2 L+)
+- 🧬 **Unknown organism handling** using phenotypic similarity scoring
+- 🧩 **Hybrid media generation** from closest matching organisms
+- 🌐 **Web-based interface** built with Flask
+- 💾 **Database:** Centraldatabase.csv (~800 species)
+- 💸 **Completely free & open-source**
+
+---
+
+## 🧠 How It Works (Conceptual)
+1. User enters an organism name **or**
+2. Provides phenotypic parameters for unknown organisms  
+   (Gram reaction, morphology, oxygen requirement, pH, temperature, origin)
+3. A **rule-based weighted distance algorithm** identifies closest matches
+4. Media compositions are retrieved, merged, and scaled automatically
+
+⚠️ This is a **rule-based research prototype**, not an AI or clinical diagnostic tool.
+
+---
+
+## 🛠️ Tech Stack
+- **Backend:** Python, Flask
+- **Frontend:** HTML, CSS, JavaScript
+- **Database:** CSV-based curated microbiology dataset (~800 species)
+- **Algorithms:** Fuzzy string matching + weighted phenotypic distance scoring
+
+---
+
+## 🚀 Running Locally
+```bash
+git clone https://github.com/StressedUnderAMountain/BacDoc.git
+cd BacDoc
+pip install -r requirements.txt
+python app.py
+http://0.0.0.0:5000
+
+---
+
+## 📚 Academic Context
+Developed as part of a B.Sc. Microbiology dissertation  
+**Karmaveer Bhaurao Patil College, Navi Mumbai**  
+University of Mumbai (2024–2025).
+
+## ⚠️ Disclaimer
+BacDoc is intended for educational and research use only.  
+It is not a clinical diagnostic system.  
+All recommendations require experimental validation.
+
+## 📄 License
+[MIT License](LICENSE) — see LICENSE file for details.
+
+## 👤 Author
+**Preston Joshua Menezes**  
+Microbiology | Computational Biology | Open Science
