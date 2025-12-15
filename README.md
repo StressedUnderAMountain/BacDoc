@@ -68,7 +68,7 @@ University of Mumbai (2024–2025).
 
 ## ⚠️ Disclaimer
 BacDoc is intended for educational and research use only.  
-It is not a clinical diagnostic system.  
+It is not a clinical diagnostic system yet.  
 All recommendations require experimental validation.
 
 ## 📄 License
