@@ -55,7 +55,7 @@ BacDoc is a free, web-based microbiology support platform that assists with **ba
 git clone https://github.com/StressedUnderAMountain/BacDoc.git
 cd BacDoc
 pip install -r requirements.txt
-python app.py 
+PhytonAILLm.py 
  ```
 Then open: http://0.0.0.0:5000 
 
