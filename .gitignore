@@ -1,56 +1,74 @@
+# =========================
 # Python
+# =========================
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+
+# =========================
+# Virtual Environments
+# =========================
 env/
 venv/
-.venv/
 ENV/
+.venv/
+
+# =========================
+# Build / Distribution
+# =========================
 build/
-develop-eggs/
 dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
 *.egg-info/
+.eggs/
+wheels/
+sdist/
 .installed.cfg
 *.egg
 
-# Virtual environments
-venv/
-ENV/
-env/
-.venv
+# =========================
+# Flask / Web
+# =========================
+instance/
+*.sqlite3
+*.db
+.flaskenv
+.env
 
-# IDE
+# =========================
+# Testing / Coverage
+# =========================
+.pytest_cache/
+.tox/
+.coverage
+htmlcov/
+
+# =========================
+# Logs
+# =========================
+*.log
+pip-log.txt
+
+# =========================
+# IDE / Editor
+# =========================
 .vscode/
 .idea/
 *.swp
 *.swo
 *.swn
 *~
+
+# =========================
+# OS
+# =========================
 .DS_Store
+Thumbs.db
 
-# Logs
-*.log
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Testing
-.pytest_cache/
-.tox/
-.coverage
-htmlcov/
-
-# Misc
+# =========================
+# Temporary
+# =========================
 .tmp/
 temp/
 *.bak
